@@ -24,10 +24,12 @@ ipcMain.on('file-upload', (event, fileData) => {
     const tempCsvPath = path.join(tempDir, 'temp.csv');  
     fs.writeFileSync(tempCsvPath, fileContent);
 
-    const resourcePath = ".";  
+    // const resourcePath = "." // 로컬 테스트 용
+    const resourcePath = path.join(process.resourcesPath, 'app.asar.unpacked') // 배포용
+
     const pythonExecutable = process.platform === 'win32'
-        ? path.join(resourcePath, 'resources', 'venv', 'Scripts', 'python.exe')
-        : path.join(resourcePath, 'resources', 'venv', 'bin', 'python');
+        ? path.join(resourcePath, 'resources', 'venv_win', 'Scripts', 'python.exe')
+        : path.join(resourcePath, 'resources', 'venv_mac', 'bin', 'python');
 
     const pythonScript = path.join(resourcePath, 'resources', 'function', 'main.py');  
     const xmlOutputPath = path.join(tempDir, `${year}년_${month}월_기도이야기.xml`);  

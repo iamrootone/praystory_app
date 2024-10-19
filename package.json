@@ -12,17 +12,17 @@
     "appId": "com.sarangchurch.univ6.pray",  
     "productName": "praystory", 
     "files": [
-      "build/**/*",
-      "function/**/*",
       "images/*",
       "main.js",
       "preload.js",
       "index.html",
       "style.css",
       {
-        "from": "resources/", 
+        "from": "resources/",
         "to": "resources/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "asarUnpack": [
