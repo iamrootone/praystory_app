@@ -1,0 +1,4 @@
+dist/
+dist/praystory-*-arm64.dmg
+dist/praystory Setup *.exe
+dist/praystory Setup *.zip

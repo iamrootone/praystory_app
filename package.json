@@ -1,0 +1,49 @@
+{
+  "name": "praystory",
+  "version": "1.0.0",
+  "description": "make your pray story documents automatically",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.sarangchurch.univ6.pray",  
+    "productName": "praystory", 
+    "files": [
+      "build/**/*",
+      "function/**/*",
+      "images/*",
+      "main.js",
+      "preload.js",
+      "index.html",
+      "style.css",
+      {
+        "from": "resources/", 
+        "to": "resources/",
+        "filter": ["**/*"]
+      }
+    ],
+    "asarUnpack": [
+      "resources/**"
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "images/univ6_padding.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "images/univ6_padding.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "images/univ6_padding.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^23.0.0",
+    "electron-builder": "^23.0.0"
+  }
+}
+

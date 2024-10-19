@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>univ6 예닮공 기도이야기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="navbar">
+    <img src="images/univ6.png" alt="로고" class="logo"> 
+    <a href="javascript:void(0)" onclick="showContent('creator')">기도이야기 제작</a>
+    <a href="javascript:void(0)" onclick="showContent('guide')">사용 방법</a>
+  </div>
+
+  <div id="creator" class="content active-content">
+    <div class="container">
+      <h1>기도이야기 제작</h1>
+      
+      <form id="upload-form">
+        <label for="csvFile">구글폼 csv 파일 업로드</label>
+        <input type="file" id="csvFile" accept=".csv"><br>
+
+        <label for="year">Year</label>
+        <select id="year">
+          <script>
+            for (let year = 2024; year <= 2100; year++) {
+              document.write(`<option value="${year}">${year}년</option>`);
+            }
+          </script>
+        </select>
+
+        <label for="month">Month</label>
+        <select id="month">
+          <option value="1">1월</option>
+          <option value="2">2월</option>
+          <option value="3">3월</option>
+          <option value="4">4월</option>
+          <option value="5">5월</option>
+          <option value="6">6월</option>
+          <option value="7">7월</option>
+          <option value="8">8월</option>
+          <option value="9">9월</option>
+          <option value="10">10월</option>
+          <option value="11">11월</option>
+          <option value="12">12월</option>
+        </select>
+
+        <button type="button" onclick="submitForm()">제작 시작</button>
+      </form>
+
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <div id="guide" class="content">
+    <div class="container">
+      <h2>사용 방법</h2>
+      <p>1. 구글 폼 설문을 종료하고, <b>csv 파일을 다운로드</b></p>
+      <p>2. 다운로드한 <b>csv 파일을 업로드</b>하고, 현재 년/월을 선택</p>
+      <p>3. <b>"제작 시작" 버튼</b>을 클릭하고, XML/XSL 파일을 같은 폴더에 다운로드</p>
+      <p>4. 한글 빈 문서를 열고, <b>"파일 > XML 문서 > XML 문서 불러오기"</b> 를 통해 다운 받은 XML 파일을 열면 기도이야기 작성 완료</p>
+      <p>유의사항: XSL 파일은 XML 파일을 열 때만 사용됩니다!</p>
+    </div>
+  </div>
+
+  <script>
+    function showContent(contentId) {
+      const contents = document.querySelectorAll('.content');
+      contents.forEach(content => content.classList.remove('active-content'));
+      document.getElementById(contentId).classList.add('active-content');
+    }
+
+    function submitForm() {
+      const fileInput = document.getElementById('csvFile');
+      const year = document.getElementById('year').value;
+      const month = document.getElementById('month').value;
+
+      if (!fileInput.files.length || !year || !month) {
+        alert('모든 필드를 입력해 주세요.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const fileContent = event.target.result;
+
+        window.api.sendFileData({
+          fileName: file.name,
+          fileContent: fileContent,
+          year: year,
+          month: month
+        });
+
+        window.api.onConversionComplete((event, data) => {
+          const resultDiv = document.getElementById('result');
+          if (data.success) {
+            resultDiv.innerHTML = `
+              <div class="result-box">
+                <p>제작이 완료되었습니다!</p>
+                <a href="${data.xmlPath}" download>XML 파일 다운로드</a>
+                <a href="${data.xslPath}" download>XSL 파일 다운로드</a>
+              </div>
+              <div class="warnings-box">
+                <p>검토 시 유의사항</p>
+                ${data.warnings.map(warning => `
+                  <pre class="${warning.type}">${warning.message}</pre>
+                `).join('')}
+              </div>
+            `;
+          } else {
+            resultDiv.innerHTML = `
+              <div class="result-box">
+                <p>변환에 실패하였습니다!</p>
+              </div>
+              <div class="warnings-box">
+                <p>에러 메시지</p>
+                ${data.warnings.map(warning => `
+                  <pre class="${warning.type}">${warning.message}</pre>
+                `).join('')}
+              </div>
+            `;
+          }
+        });
+      };
+
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
