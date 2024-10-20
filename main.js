@@ -24,8 +24,8 @@ ipcMain.on('file-upload', (event, fileData) => {
     const tempCsvPath = path.join(tempDir, 'temp.csv');  
     fs.writeFileSync(tempCsvPath, fileContent);
 
-    // const resourcePath = "." // 로컬 테스트 용
-    const resourcePath = path.join(process.resourcesPath, 'app.asar.unpacked') // 배포용
+    const resourcePath = "." // 로컬 테스트 용
+    // const resourcePath = path.join(process.resourcesPath, 'app.asar.unpacked') // 배포용
 
     const pythonExecutable = process.platform === 'win32'
         ? path.join(resourcePath, 'resources', 'venv_win', 'Scripts', 'python.exe')
